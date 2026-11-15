@@ -1,6 +1,9 @@
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
+import path from 'path';
 
+// Force AL2023 environment runtime for Vercel Linux
+process.env.AWS_LAMBDA_JS_RUNTIME = 'nodejs20.x';
 chromium.setGraphicsMode = false;
 
 export const config = {
@@ -25,6 +28,10 @@ export default async function handler(req, res) {
   let browser = null;
   try {
     const executablePath = await chromium.executablePath();
+    const execDir = path.dirname(executablePath);
+
+    // CRITICAL: Point Linux dynamic loader to the extracted al2023 libraries in /tmp
+    process.env.LD_LIBRARY_PATH = `${execDir}:${process.env.LD_LIBRARY_PATH || ''}`;
 
     browser = await puppeteer.launch({
       args: [

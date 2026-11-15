@@ -1,5 +1,7 @@
-import chromium from '@sparticuz/chromium-min';
+import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
+
+chromium.setGraphicsMode = false;
 
 export const config = {
   maxDuration: 60,
@@ -22,9 +24,7 @@ export default async function handler(req, res) {
 
   let browser = null;
   try {
-    const executablePath = await chromium.executablePath(
-      'https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar'
-    );
+    const executablePath = await chromium.executablePath();
 
     browser = await puppeteer.launch({
       args: [
@@ -69,9 +69,7 @@ export default async function handler(req, res) {
     if (browser) {
       try {
         await browser.close();
-      } catch (closeErr) {
-        // ignore
-      }
+      } catch (closeErr) {}
     }
     console.error('Screenshot error:', error);
     return res.status(500).json({

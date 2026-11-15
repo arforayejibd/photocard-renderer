@@ -61,15 +61,17 @@ export default async function handler(req, res) {
     // Wait 800ms to guarantee custom font and background render
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const imageBuffer = await page.screenshot({
-      type: 'png',
-      omitBackground: false,
-    });
+    const format = req.query.format === 'png' ? 'png' : 'jpeg';
+    const screenshotOptions = format === 'png'
+      ? { type: 'png', omitBackground: false }
+      : { type: 'jpeg', quality: 92, omitBackground: false };
+
+    const imageBuffer = await page.screenshot(screenshotOptions);
 
     await browser.close();
     browser = null;
 
-    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Type', format === 'png' ? 'image/png' : 'image/jpeg');
     res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
     return res.status(200).send(imageBuffer);
   } catch (error) {

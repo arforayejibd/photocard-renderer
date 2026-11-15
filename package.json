@@ -1,0 +1,11 @@
+{
+  "name": "photocard-renderer",
+  "version": "1.0.0",
+  "description": "Serverless Photocard Screenshot API for Samprotikee News",
+  "type": "module",
+  "main": "api/screenshot.js",
+  "dependencies": {
+    "@sparticuz/chromium-min": "^131.0.1",
+    "puppeteer-core": "^23.8.0"
+  }
+}

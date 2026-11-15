@@ -71,9 +71,11 @@ export default async function handler(req, res) {
     await browser.close();
     browser = null;
 
+    const buf = Buffer.isBuffer(imageBuffer) ? imageBuffer : Buffer.from(imageBuffer);
     res.setHeader('Content-Type', format === 'png' ? 'image/png' : 'image/jpeg');
+    res.setHeader('Content-Length', buf.length);
     res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
-    return res.status(200).send(imageBuffer);
+    return res.end(buf);
   } catch (error) {
     if (browser) {
       try {
